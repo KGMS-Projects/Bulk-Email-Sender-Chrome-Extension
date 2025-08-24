@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 400px;
+      padding: 5px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 20px 0;
+      font-size: 24px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    #emailList {
+      height: 100px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px 0 5px 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+    }
+
+    .success {
+      background: rgba(39, 174, 96, 0.3);
+      border: 1px solid #27ae60;
+    }
+
+    .error {
+      background: rgba(231, 76, 60, 0.3);
+      border: 1px solid #e74c3c;
+    }
+
+    .info {
+      background: rgba(52, 152, 219, 0.3);
+      border: 1px solid #3498db;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 10px 0;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00f260, #0575e6);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .small-text {
+      font-size: 12px;
+      opacity: 0.8;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .developer-credit {
+      font-size: 10px;
+      opacity: 0.7;
+      text-align: center;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      color: #040080;
+    }
+
+    .developer-credit strong {
+      opacity: 0.9;
+      font-weight: bold;
+    }
+
+    .settings-icon {
+      float: right;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.7;
+      margin-top: -5px;
+    }
+
+    .settings-icon:hover {
+      opacity: 1;
+    }
+
+    .advanced-settings {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      Bulk Email Sender 
+      <span class="settings-icon" id="settingsToggle">⚙️</span>
+    </h1>
+    
+    <div class="form-group">
+      <label for="emailProvider">Email Provider:</label>
+      <select id="emailProvider">
+        <option value="gmail">Gmail</option>
+        <option value="outlook">Outlook</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="subject">Subject:</label>
+      <input type="text" id="subject" placeholder="Enter email subject">
+    </div>
+
+    <div class="form-group">
+      <label for="message">Message:</label>
+      <textarea id="message" placeholder="Enter your email message here..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="emailList">Email List (one per line):</label>
+      <textarea id="emailList" placeholder="email1@example.com&#10;email2@example.com&#10;email3@example.com"></textarea>
+    </div>
+
+    <div class="advanced-settings" id="advancedSettings">
+      <div class="form-group">
+        <label for="delay">Delay between emails (seconds):</label>
+        <input type="number" id="delay" value="2" min="1" max="60">
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="ccSelf" style="width: auto; display: inline; margin-right: 5px;">
+          CC yourself on emails
+        </label>
+      </div>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <button id="sendEmails">Send Bulk Emails</button>
+    <button id="stopSending" style="display: none; background: #e74c3c;">Stop Sending</button>
+
+    <div id="status" class="status"></div>
+
+    <div class="small-text">
+      Make sure you're logged into your email provider first
+    </div>
+
+    <div class="developer-credit">
+      Developed by <strong>Mihilayan Sachinthana (KGMS)</strong>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
